@@ -132,7 +132,7 @@ class HealthCheck(object):
 class EnvironmentDump(object):
     def __init__(self, app=None, path=None,
                  include_os=True, include_python=True,
-                 include_config=True, include_process=True):
+                 include_config=True, include_process=True, **options):
         self.functions = {}
         if include_os:
             self.functions['os'] = self.get_os
@@ -143,12 +143,13 @@ class EnvironmentDump(object):
         if include_process:
             self.functions['process'] = self.get_process
 
+        self.options = options
         if app:
             self.init_app(app, path)
 
     def init_app(self, app, path):
         if path:
-            app.add_url_rule(path, view_func=self.dump_environment)
+            app.add_url_rule(path, view_func=self.dump_environment, **self.options)
 
     def add_section(self, name, func):
         if name in self.functions:
