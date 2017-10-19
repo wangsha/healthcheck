@@ -6,6 +6,7 @@ import socket
 import sys
 import time
 import traceback
+import platform
 from flask import current_app
 try:
     from functools import reduce
@@ -169,7 +170,7 @@ class EnvironmentDump(object):
     def get_os(self):
         return {'platform': sys.platform,
                 'name': os.name,
-                'uname': os.uname()}
+                'uname': platform.uname()}
 
     def get_config(self):
         return self.safe_dump(current_app.config)
