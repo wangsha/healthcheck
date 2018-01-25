@@ -6,6 +6,7 @@ import socket
 import sys
 import time
 import traceback
+import platform
 from flask import current_app
 try:
     from functools import reduce
@@ -49,6 +50,7 @@ class HealthCheck(object):
                  success_ttl=27, failed_status=500, failed_headers=None,
                  failed_handler=json_failed_handler, failed_ttl=9,
                  exception_handler=basic_exception_handler, checkers=None,
+                 log_on_failure=True,
                  **options):
         self.cache = dict()
 
@@ -63,6 +65,8 @@ class HealthCheck(object):
         self.failed_ttl = float(failed_ttl or 0)
 
         self.exception_handler = exception_handler
+
+        self.log_on_failure = log_on_failure
 
         self.options = options
         self.checkers = checkers or []
@@ -115,7 +119,8 @@ class HealthCheck(object):
 
         if not passed:
             msg = 'Health check "{}" failed with output "{}"'.format(checker.__name__, output)
-            current_app.logger.error(msg)
+            if self.log_on_failure:
+                current_app.logger.error(msg)
 
         timestamp = time.time()
         if passed:
@@ -168,7 +173,7 @@ class EnvironmentDump(object):
     def get_os(self):
         return {'platform': sys.platform,
                 'name': os.name,
-                'uname': os.uname()}
+                'uname': platform.uname()}
 
     def get_config(self):
         return self.safe_dump(current_app.config)
