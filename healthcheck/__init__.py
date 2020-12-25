@@ -85,7 +85,7 @@ class HealthCheck(object):
         results = []
         for checker in self.checkers:
             key = checker.__name__
-            if checker in self.cache and self.cache[key].get('expires') >= time.time():
+            if key in self.cache and self.cache[key].get('expires') >= time.time():
                 result = self.cache[key]
             else:
                 result = self.run_check(checker)
