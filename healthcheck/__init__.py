@@ -84,11 +84,12 @@ class HealthCheck(object):
     def check(self):
         results = []
         for checker in self.checkers:
-            if checker in self.cache and self.cache[checker].get('expires') >= time.time():
-                result = self.cache[checker]
+            key = checker.__name__
+            if checker in self.cache and self.cache[key].get('expires') >= time.time():
+                result = self.cache[key]
             else:
                 result = self.run_check(checker)
-                self.cache[checker] = result
+                self.cache[key] = result
             results.append(result)
 
         passed = reduce(check_reduce, results, True)
