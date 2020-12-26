@@ -133,6 +133,7 @@ class HealthCheck(object):
                   'output': output,
                   'passed': passed,
                   'timestamp': timestamp,
+                  'expire_at': "%s" % datetime.fromtimestamp(expires),
                   'expires': expires}
         return result
 
