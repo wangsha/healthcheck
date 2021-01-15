@@ -1,14 +1,16 @@
 import imp
 import json
 import os
-import six
+import platform
 import socket
 import sys
 import time
 import traceback
-import platform
-from flask import current_app
 from datetime import datetime
+
+import six
+from flask import current_app
+
 try:
     from functools import reduce
 except Exception:
@@ -106,7 +108,7 @@ class HealthCheck(object):
             message = "NOT OK"
             if self.failed_handler:
                 message = self.failed_handler(results)
-            headers = self.success_headers() if callable(self.success_headers) else self.success_headers
+            headers = self.failed_headers() if callable(self.failed_headers) else self.failed_headers
 
             return message, self.failed_status, headers
 
