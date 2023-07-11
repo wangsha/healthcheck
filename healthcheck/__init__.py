@@ -8,7 +8,6 @@ import time
 import traceback
 from datetime import datetime
 
-import six
 from flask import current_app
 
 try:
@@ -170,7 +169,7 @@ class EnvironmentDump(object):
 
     def dump_environment(self):
         data = {}
-        for (name, func) in six.iteritems(self.functions):
+        for (name, func) in self.functions.items():
             data[name] = func()
 
         return json.dumps(data), 200, {'Content-Type': 'application/json'}
