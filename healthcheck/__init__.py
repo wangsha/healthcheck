@@ -83,7 +83,7 @@ class HealthCheck(object):
     def add_check(self, func):
         self.checkers.append(func)
 
-    def check(self):
+    def check(self, *args, **kwargs):
         results = []
         for checker in self.checkers:
             key = checker.__name__
