@@ -52,9 +52,10 @@ class HealthCheck(object):
                  success_ttl=27, failed_status=500, failed_headers=None,
                  failed_handler=json_failed_handler, failed_ttl=9,
                  exception_handler=basic_exception_handler, checkers=None,
-                 log_on_failure=True,
+                 log_on_failure=True, cache_handler=None,
                  **options):
         self.cache = dict()
+        self.cache_handler = cache_handler
 
         self.success_status = success_status
         self.success_headers = success_headers or {'Content-Type': 'application/json'}
@@ -85,6 +86,8 @@ class HealthCheck(object):
 
     def check(self, *args, **kwargs):
         results = []
+        if self.cache_handler:
+            self.cache = self.cache_handler()
         for checker in self.checkers:
             key = checker.__name__
             if key in self.cache and self.cache[key].get('expires') >= time.time():
