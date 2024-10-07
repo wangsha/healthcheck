@@ -1,4 +1,3 @@
-import imp
 import json
 import os
 import platform
@@ -194,10 +193,14 @@ class EnvironmentDump(object):
                                    'micro': sys.version_info.micro,
                                    'releaselevel': sys.version_info.releaselevel,
                                    'serial': sys.version_info.serial}}
-        if imp.find_module('pip'):
-            import pip
-            packages = dict([(p.project_name, p.version) for p in pip.get_installed_distributions()])
-            result['packages'] = packages
+        import importlib
+        import pip
+        from pip._internal.utils.misc import get_installed_distributions
+        if importlib.util.find_spec('pip'):
+            # Get the installed distributions using the modern pip API
+            installed_packages = {pkg.project_name: pkg.version for pkg in get_installed_distributions()}
+            result = {}
+            result['packages'] = installed_packages
 
         return result
 
